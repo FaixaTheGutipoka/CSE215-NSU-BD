@@ -1,0 +1,30 @@
+import java.util.Scanner;
+import java.lang.String;
+public class Main {
+    public static void main(String[] args) {
+        Scanner o = new Scanner(System.in);
+        int x1 = o.nextInt();
+
+        double x2 = o.nextDouble();
+
+        o.nextLine(); //this is used so that string intake doesn't get escaped.
+
+        String x3 = o.nextLine();
+
+
+        System.out.println(x1);
+        System.out.println(x2);
+        System.out.println(x3);
+
+        if(1<2){
+            System.out.println("Within 1st if");
+        }
+        if(2==6){
+            System.out.println("Within 2nd if");
+        }
+        else{
+            System.out.
+        }
+
+    }
+}
