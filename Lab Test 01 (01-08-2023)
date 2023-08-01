@@ -1,0 +1,26 @@
+import java.util.Scanner;
+
+public class Main {
+    public static void main(String[] args) {
+
+        Scanner o = new Scanner(System.in);
+        int x1 = o.nextInt();
+
+        oddEven(x1);
+
+    }
+
+    public static void oddEven(int a){
+
+        switch (a%2){
+
+            case 0:
+                System.out.println("Even");
+                break;
+
+            case 1:
+                System.out.println("Odd");
+                break;
+        }
+    }
+}
