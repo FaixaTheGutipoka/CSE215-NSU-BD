@@ -23,8 +23,24 @@ public class Main {
             System.out.println("Within 2nd if");
         }
         else{
-            System.out.
+            System.out.println("Within else")
         }
+
+        /* Here, the output will be:
+                    Within 1st if
+                    Within else
+        We are not supposed to do ifs repeatedly one after another unless it's utterly necessary */
+
+        switch(n){
+            case 1: //name of case is 1
+                //body
+                break;
+            case 2:
+                //body
+                break;
+        }
+
+        //name of case depends on the value of n. it can be 1, 0 or 1000, 78 etc.
 
     }
 }
