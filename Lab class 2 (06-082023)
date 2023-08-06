@@ -1,0 +1,58 @@
+public class Main {
+    public static void main(String[] args) {
+        /* Loops are three types: (i) for loop
+                                  (ii) while loop
+                                  (iii) do-while loop (the statements will be executed at least once as the condition is being checked at last)
+
+        //for loop
+        for(int i =0; i<10; i++){
+            System.out.print("A"+(i+1)+"\n");
+        }
+        System.out.println();
+
+        //while loop
+        int j = 0;
+        while(j<10){
+            System.out.print("B"+(j+1)+"\n");
+            j++;
+        }
+        System.out.println();
+
+        //do-while loop
+        int k = 0;
+        do{
+            System.out.print("C"+(k+1)+"\n");
+            k++;
+        }while(k<10);
+
+        //nested loop
+        for(int i=1; i<=3;i++){
+            for(int j=1;j<=3;j++){
+                System.out.print(j + "\t");
+            }
+            System.out.println();
+        }
+
+        //number right triangle
+        for(int i=1; i<=3; i++){
+            for(int j=1; j<=i; j++){
+                System.out.print(j+"\t");
+            }
+            System.out.println();
+        }
+
+         */
+
+        //number right triangle the other way around
+        int i, j;
+        for(i=1; i<=3;i++){
+            for(j=2*(2-i);j>=i;j--){
+                System.out.print("\t");
+            }
+            for(j=1;j<=i;j++){
+                System.out.print(j+"\t");
+            }
+            System.out.println();
+        }
+    }
+}
