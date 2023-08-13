@@ -1,0 +1,63 @@
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner o = new Scanner(System.in);
+        int x1 = o.nextInt();
+        float x2 = o.nextFloat();
+        int x3 = o.nextInt();
+        oddEven(x1);
+        primeNumber(x1);
+        BMI(x2);
+        BMI2(x2);
+        leapYear(x3);
+    }
+    public static void oddEven(int a){
+        switch (a%2){
+            case 0:
+                System.out.println("Even");
+                break;
+            case 1:
+                System.out.println("Odd");
+                break;
+        }
+    }
+
+    public static void primeNumber(int a){
+        int flag = 0;
+        for(int i=1; i<=a/2; i++){
+            if(a%i!=0)
+                break;
+            else {
+                flag = 1;
+            }
+        }
+        String result = (flag == 1)? "The given number is a prime number":"The given number is not a prime number";
+        System.out.println(result);
+    }
+
+    public static void BMI(float a){
+        if(a < 18.5){
+            System.out.println("underweight");
+        } else if (a >= 18.5 && a < 25) {
+            System.out.println("healthy");
+        } else if (a >= 25 && a < 30) {
+            System.out.println("overweight");
+        }else{
+            System.out.println("obese");
+        }
+    }
+
+//Java ternary operator
+
+    public static void BMI2(float a){
+        String b = (a < 18.5)? "underweight":
+                (a >= 18.5 && a < 25)? "healthy":
+                        (a >= 25 && a < 30)? "overweight": "obese";
+        System.out.println(b);
+    }
+
+    public static void leapYear(int a){
+        String b = (a%4==0 && a%100!=0)?"Leap Year":"Not leap year";
+        System.out.println(b);
+    }
+}
