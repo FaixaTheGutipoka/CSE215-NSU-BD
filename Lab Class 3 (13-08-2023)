@@ -1,0 +1,46 @@
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        boolean flag = false;
+/*
+This part is for taking the arguments from the console.
+
+        float x1 = a.nextFloat();
+        float x2 = a.nextFloat();
+        float x3 = a.nextFloat();
+
+ */
+        float area = 0, b, p = 0;
+
+/* 
+
+This part is mainly for making the arguments taken in the terminal as float from string.
+We execute this part if we take arguments from the terminal
+
+*/
+        float x1 = Float.parseFloat(args[0]);
+        float x2 = Float.parseFloat(args[1]);
+        float x3 = Float.parseFloat(args[2]);
+
+        do{
+            if(x1 > 0 && x2 > 0 && x3 > 0 && x1+x2 > x3 && x2+x3 > x1 && x3+x1 > x2){
+                flag = true;
+                p = x1+x2+x3;
+                b = p/2;
+                area = (float) Math.sqrt(b*(b-x1)*(b-x2)*(b-x3));
+            }
+            else{
+                Scanner a = new Scanner(System.in);
+                System.out.println("Wrong input. Please try again.");
+                flag = false;
+                x1 = a.nextFloat();
+                x2 = a.nextFloat();
+                x3 = a.nextFloat();
+            }
+        } while (flag == false);
+
+        System.out.println(area);
+        System.out.println(p);
+    }
+}
+
