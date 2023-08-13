@@ -1,0 +1,162 @@
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        Scanner a = new Scanner(System.in);
+        String name = a.nextLine();
+        int b = a.nextInt();
+        one(name, b);
+        twoA();
+        twoB();
+        twoC();
+        twoD();
+        three(b);
+        four();
+        arrayOne(new int[]{0, 1, 2, 3, 4, 5});
+        arrayTwo(b);
+        arrayThree();
+        arrayFour();
+    }
+
+    public static void one(String name, int a){
+        for(int i=0; i<a; i++){
+            System.out.println(name);
+        }
+    }
+    public static void twoA(){
+        for(int i=5; i>=1; i--){
+            for(int k=0; k<=5-i; k++)
+                System.out.print(" ");
+            for(int j=i; j>=1; j--){
+                System.out.print(j);
+            }
+            System.out.println();
+        }
+    }
+
+    public static void twoB(){
+        for(int i=1; i<=5; i++){
+            for(int j=1; j<=i; j++) {
+                System.out.print(j);
+            }
+            System.out.println();
+        }
+    }
+
+    public static void twoC(){
+        for(int i=1; i<=5; i++){
+            for(int k=5; k>=i; k--){
+                System.out.print(" ");
+            }
+            for(int j=1; j<=(2*i)-1; j++){
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void twoD(){
+        for(int i=5; i>=1; i--){
+            for(int k=0; k<=5-i; k++){
+                System.out.print(" ");
+            }
+            for(int j=(2*i)-1; j>=1; j--){
+                System.out.print("*");
+            }
+            System.out.println();
+        }
+    }
+
+    public static void three(int a){
+        for(int i=1; i<=a/2; i++){
+            if(a%i==0)
+                System.out.print(i+" ");
+        }
+        System.out.println();
+    }
+
+    public static void four(){
+        for(int i=150; i>=100; i--){
+            if(i%8==0)
+                System.out.print(i+" ");
+        }
+    }
+
+    public static void arrayOne(int[] arr){
+        float sum=0, avg=0, per=0;
+        int count=0;
+        for(int i=0; i<arr.length; i++){
+            sum+=(float)arr[i];
+        }
+        avg=sum/arr.length;
+        System.out.println(avg);
+        for(int i=0; i<arr.length; i++){
+            if(arr[i]>avg)
+                count+=1;
+        }
+        per=count*100/arr.length;
+        System.out.println(per+"%");
+    }
+
+    public static void arrayTwo(int a){
+        int[] arr = new int[a];
+        arr[0]=0;
+        arr[1]=1;
+        for(int i=2; i<a; i++){
+            arr[i]=arr[i-1]+arr[i-2];
+        }
+        for(int i=0; i<a; i++){
+            System.out.print(arr[i] + " ");
+        }
+    }
+
+    public static void arrayThree(){
+        int sumR1 = 0, sumR2 = 0, sumR3 = 0, sumC1=0, sumC2=0, sumC3=0, sum=0;
+        Scanner a = new Scanner(System.in);
+        int[][] arr = new int[3][3];
+        for(int i=0;i<3;i++){
+            for(int j=0; j<3; j++){
+                arr[i][j]= a.nextInt();
+            }
+        }
+
+        for(int i=0; i<3; i++){
+            sumR1+=arr[0][i];
+            sumR2+=arr[1][i];
+            sumR3+=arr[2][i];
+
+            sumC1+=arr[i][0];
+            sumC2+=arr[i][1];
+            sumC3+=arr[i][2];
+
+            sum+=arr[i][i];
+        }
+
+        for(int i=0;i<3;i++){
+            for(int j=0; j<3; j++){
+                System.out.print(arr[i][j]+" ");
+            }
+            System.out.println();
+        }
+
+        System.out.println("Row1: "+sumR1+" Row2: "+sumR2+" Row3: "+sumR3+" Column1: "+sumC1+" Column2: "+sumC2+" Column3: "+sumC3+" Diagonal: "+sum);
+    }
+
+    public static void arrayFour(){
+        Scanner a = new Scanner(System.in);
+        System.out.print("Enter size: ");
+        int b = a.nextInt();
+        int[] arr = new int[b];
+        int c = 0;
+
+        System.out.print("Enter numbers: ");
+        for(int i=0;i<b;i++){
+            arr[i] = a.nextInt();
+        }
+        for (int i=0;i<b-2;i++) {
+            if (arr[i]==arr[i+1]&&arr[i+1]==arr[i+2]&&arr[i]==arr[i+2]) {
+                c = arr[i];
+                System.out.print(c + " ");
+            }
+        }
+    }
+}
