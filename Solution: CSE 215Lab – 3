@@ -1,0 +1,85 @@
+import java.util.Scanner;
+public class Main {
+    static Scanner a = new Scanner(System.in);
+    static double balance = 0;
+    public static void main(String[] args) {
+        int[] b = {1,2,3}, c = {9,10,11};
+        countOdd(b,c);
+        bank();
+
+
+    }
+
+    public static void countOdd(int[] array1, int[] array2){
+        int count1=0, count2=0;
+        for(int i=0;i<array1.length;i++){
+            if (array1[i] % 2 == 0) {
+                count1++;
+            }
+        }
+        for(int i=0;i<array2.length;i++){
+            if ((array2[i] % 2 == 0)) {
+                count2++;
+            }
+        }
+        if(count1>count2){
+            for (int i=0;i<array1.length;i++){
+                if(array1[i] % 2 == 0){
+                    System.out.println(array1[i]);
+                }
+            }
+        }
+        else{
+            for (int i=0;i<array2.length;i++){
+                if(array2[i] % 2 == 0){
+                    System.out.println(array2[i]);
+                }
+            }
+        }
+    }
+
+    public static void bank(){
+        int x = 0;
+        while(x!=4){
+            System.out.println("Please select an option: \n\t1. Deposit\n\t2. Withdraw\n\t3. Balance\n\t4. Exit");
+            x = a.nextInt();
+            switch (x){
+                case 1:{
+                    System.out.println("Please enter deposit amount: ");
+                    double amount = a.nextDouble();
+                    deposit(amount);
+                }break;
+                case 2:{
+                    System.out.println("Please enter withdraw amount: ");
+                    double amount = a.nextDouble();
+                    withdraw(amount);
+                }break;
+                case 3:{
+                    Balance();
+                }break;
+                case 4:
+                    break;
+            }
+        }
+    }
+
+    public static double deposit(double amount){
+        balance+=amount;
+        System.out.println("Amount has been deposited. Current balance is: "+balance);
+        return balance;
+    }
+    public static double withdraw(double amount){
+        if(amount > balance){
+            System.out.println("Cannot withdraw amount.\nDoesn't have sufficient balance.");
+        }
+        else{
+            balance-=amount;
+            System.out.println("Amount has been withdrawn. Current balance is: "+balance);
+        }
+        return balance;
+    }
+    public static void Balance(){
+        System.out.println("Current balance is: "+balance);
+    }
+
+}
