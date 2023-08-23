@@ -6,6 +6,7 @@ public class Main {
         favouriteLanguageLetters();
     }
 
+    //Problem#2
     public static void populationProjection() {
         //variable declaration
         double birth_rate = 1 / 1.0; // 1 birth per minute
@@ -37,6 +38,8 @@ public class Main {
         }
     }
 
+
+    //Problem#3
     public static void comfortIndexMath() {
         Scanner a = new Scanner(System.in);
 
@@ -58,6 +61,8 @@ public class Main {
         System.out.println("\nThe comfort index is: " + Comfort_Index);
     }
 
+
+    //Problem#4
     public static void favouriteLanguageLetters() {
         String[] lan_array = {"Bengali","Japanese","Hindi","Chinese","Hebrew"};
 
