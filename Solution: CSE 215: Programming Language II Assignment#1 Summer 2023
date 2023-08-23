@@ -1,0 +1,60 @@
+import java.util.Scanner;
+public class Main {
+    public static void main(String[] args) {
+        populationProjection();
+        comfortIndexMath();
+        favouriteLanguageLetters();
+    }
+
+    public static void populationProjection() {
+        //variable declaration
+        double birth_rate = 1 / 1.0; // 1 birth per minute
+        double death_rate = 1 / 2.0; // 1 death per 2 minutes
+        double migration_rate = -1 / 8.0; // -1 migration per 8 minutes
+        double current_population = 169356251; //Est. 2021
+
+
+        int days = 365;
+        int minutes = 1440;
+        int years = 5; //we are not considering the leap years
+
+        System.out.println("Year\tPopulation");
+        for (int i = 1; i <= years; i++) {
+            // we are calculating the net change of population per year.
+
+            double change = (birth_rate - death_rate + migration_rate) * days * minutes * current_population;
+            current_population += change;
+
+            System.out.println(" " + i + "\t\t" + (int) current_population);
+        }
+    }
+
+    public static void comfortIndexMath() {
+        Scanner a = new Scanner(System.in);
+
+        // we are taking all the user inputs as per the variables mentioned in the question
+        System.out.println("Enter a degree in Fahrenheit: ");
+        double T = a.nextDouble(); // T = Temperature in Fahrenheit
+
+        System.out.println("Enter the relative humidity in percentage (i.e. decimal point): ");
+        double RH = a.nextDouble(); // RH = Relative Humidity
+
+        System.out.println("Enter the wind speed (greater than or equal to 2): ");
+        double V = a.nextDouble(); // V = Wind speed
+
+
+        double Tf = 35.74 + 0.6215 * T - 35.75 * Math.pow(V, 0.16) + 0.4275 * T * Math.pow(V, 0.16); // Tf = feels like temperature
+        double Comfort_Index = -42.379 + 2.04901523 * Tf + 10.14333127 * RH - 0.22475541 * Tf * RH - 6.83783e-3 * Math.pow(Tf, 2) - 5.481717e-2 * Math.pow(RH, 2) + 1.22874E-3 * Math.pow(Tf, 2) * RH + 8.5282E-4 * Tf * Math.pow(RH, 2) - 1.99E-6 * Math.pow(Tf, 2) * Math.pow(RH, 2);
+
+        System.out.println("The comfort index is: " + Comfort_Index);
+    }
+
+    public static void favouriteLanguageLetters() {
+        System.out.println("Random 5 characters of favourite language are given below: ");
+        for(int i=0; i<5; i++) {
+            //we are generating 5 letters in between ক to হ.
+            //As the Bangla letters are not in Serial in Hex, it sometimes generates a letter which is not supposed to be in the range given.
+            System.out.println((char) ((int) '\u0995' + (int) (Math.random() * (((int) '\u09FF' - (int) '\u09B9') + 1))));
+        }
+    }
+}
