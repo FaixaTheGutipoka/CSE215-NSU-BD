@@ -1,0 +1,265 @@
+import java.util.Arrays;
+import java.lang.String;
+
+public class CardGame {
+
+    // took a 2D array and made it static to be accessible in all methods in the same class.
+    public static String[][] original_card_deck = new String[52][2];
+    public static int[] points = new int[4];
+    public static String[] player_1 = new String[13];
+    public static String[] player_2 = new String[13];
+    public static String[] player_3 = new String[13];
+    public static String[] player_4 = new String[13];
+    public static int winning_index = 0;
+
+    public static void main(String[] args) {
+
+        /*
+        Part 1: creating a deck of cards, shuffling them and distributing them among 4 players
+
+        Here, first we have created an empty array for card deck and other two arrays for the suits and ranks.
+        Then we have arranged the cards according to their power in card_deck
+        Then we have shuffled them and finally distribute them among 4 players
+
+         */
+
+
+        String[] card_deck = new String[52];
+        String[] suits = {"Spades", "Hearts", "Clubs", "Diamonds"};
+        String[] ranks = {"Ace", "King", "Queen", "Joker", "10", "9", "8", "7", "6", "5", "4", "3", "2"};
+
+        int deck_index = 0;
+        for(String suit: suits){
+            for(String rank: ranks){
+                String cardName = rank + " of " + suit;
+                card_deck[deck_index] = cardName;
+                deck_index++;
+            }
+        }
+        //Printing card deck for verification
+        //System.out.println(Arrays.toString(card_deck));
+
+
+        for(int i = 0; i < 52; i++){
+            original_card_deck[i][0]=card_deck[i];
+            original_card_deck[i][1]= String.valueOf(i);
+        }
+
+        /*
+        Printing card deck for verification
+        for(int i = 0; i < 52; i++){
+            System.out.println(original_card_deck[i][0]+ ": " + original_card_deck[i][1]);
+        }
+         */
+
+        //We have shuffled the deck 52 times
+        for(int i=0; i<52; i++) {
+
+            //line 24 - 34 has been taken from slide 7 provided in Canvas.
+            for(int j=0; j<52; j++) {
+                int index = (int) (Math.random() * 52);
+                String temp = card_deck[j];
+                card_deck[j] = card_deck[index];
+                card_deck[index] = temp;
+            }
+        }
+
+        //Now we are distributing the cards among the players. Each player get 13 cards.
+
+        for(int j=0; j<13; j++){
+            player_1[j] = card_deck[j];
+            player_2[j] = card_deck[13+j];
+            player_3[j] = card_deck[26+j];
+            player_4[j] = card_deck[39+j];
+        }
+
+
+        /*
+        Printing player's deck for verification
+        System.out.println(Arrays.toString(player_1));
+        System.out.println(Arrays.toString(player_2));
+        System.out.println(Arrays.toString(player_3));
+        System.out.println(Arrays.toString(player_4));
+         */
+
+        //Game:
+        int startingPlayerIndex = 0; // Initialize to player 1 for the first round
+        String[] players = {"Player 1", "Player 2", "Player 3", "Player 4"};
+
+
+        for (int round = 1; round <= 2; round++) {
+            System.out.println("Round " + round);
+            int currentPlayerIndex = startingPlayerIndex;
+
+            String[] orderedPlayers = new String[4];
+            for (int i = 0; i < 4; i++) {
+                orderedPlayers[i] = players[(currentPlayerIndex + i) % 4];
+            }
+
+            String suit_name_1 = "";
+            String player_1_move = "";
+            String suit_name_3 = "";
+
+            // First move of the starting player in this round
+            if (round == 1) {
+                int first_card_index = (int) (Math.random() * 13);
+                player_1_move = player_1[first_card_index];
+                System.out.println(players[startingPlayerIndex] + ": " + player_1_move);
+                suit_name_1 = SuitName(player_1_move);
+            } else {
+                // Player 1 plays according to the rules in subsequent rounds
+                player_1_move = NextMove(player_1, suit_name_3);
+                System.out.println(players[startingPlayerIndex] + ": " + player_1_move);
+                suit_name_1 = SuitName(player_1_move);
+            }
+
+            // Determine the current starting player for this round
+            currentPlayerIndex = startingPlayerIndex;
+
+            String player_2_move = NextMove(player_2, suit_name_1);
+            System.out.println(players[(currentPlayerIndex + 1) % 4] + ": " + player_2_move);
+
+            String suit_name_2 = SuitName(player_2_move);
+            String player_3_move = NextMove(player_3, suit_name_2);
+            System.out.println(players[(currentPlayerIndex + 2) % 4] + ": " + player_3_move);
+
+            suit_name_3 = SuitName(player_3_move);
+            String player_4_move = NextMove(player_4, suit_name_3);
+            System.out.println(players[(currentPlayerIndex + 3) % 4] + ": " + player_4_move);
+
+            // Determine the winner of the round and update the starting player for the next round
+            String winner[] = Winner101(player_1_move, player_2_move, player_3_move, player_4_move);
+            for (int i = 0; i < 4; i++) {
+                if (orderedPlayers[i].equals(winner)) {
+                    startingPlayerIndex = (currentPlayerIndex + i) % 4;
+                    break;
+                }
+            }
+        }
+
+        //System.out.println(Arrays.toString(player_2));
+
+
+
+    }
+
+    //We get the suit name here.
+    public static String SuitName(String card){
+        if(card.contains("Spades"))
+            return "Spades";
+        else if (card.contains("Hearts"))
+            return "Hearts";
+        else if (card.contains("Clubs"))
+            return "Clubs";
+        else
+            return "Diamond";
+    }
+
+
+    // Here we are getting the next move from the next player after the 1st move from player 1
+    public static String NextMove(String[] player, String suit) {
+
+        /*
+        As it has been mentioned in the question,
+        player 1 needs to play a random card
+        If player 2 AKA. next player have card(s) of that suit (the one player 1 played,
+        they need to play the highest rank of that suit they have. For example: if player on played 6 of Spades and
+        player 2 have 3 of spades, 8 of spades and Ace of spades, then player 2 needs to play Ace of spades.
+        This is how each player playing 1 card will finish one round.
+
+        However, if player 2 doesn't have any spades card, then player 2 can play any random suit however it needs to be the lowest rank.
+        For example they can have Ace of Diamond, and 2 of clubs and they have to play ace of diamond as according to our serial ace of diamond
+        is less than 2 of clubs.
+         */
+
+        String next_card = "";
+        String highest_rank_card_of_same_suit = "";
+        String lowest_rank_card_of_different_suit = "";
+
+        for (int i = 0; i < player.length; i++) {
+            String card = player[i];
+
+            /*
+            Check if the card is null.
+            Here, by the end we will be removing the cards that has been already used in the game.
+            So, there will be some null places in the player array.
+             */
+
+            if (card == null) {
+                continue;
+            }
+
+            if (card.contains(suit)) {
+                if (highest_rank_card_of_same_suit.isEmpty() || card.compareTo(highest_rank_card_of_same_suit) > 0) {
+                    highest_rank_card_of_same_suit = card;
+                }
+            }
+            if (lowest_rank_card_of_different_suit.isEmpty() || card.compareTo(lowest_rank_card_of_different_suit) < 0) {
+                lowest_rank_card_of_different_suit = card;
+            }
+        }
+
+        if (!highest_rank_card_of_same_suit.isEmpty()) {
+            // Player has cards of the same suit, play the highest rank card
+            next_card = highest_rank_card_of_same_suit;
+        } else {
+            // Player doesn't have cards of the same suit, play the lowest rank card
+            next_card = lowest_rank_card_of_different_suit;
+        }
+
+        // Remove the played card from the player's deck
+        for (int i = 0; i < player.length; i++) {
+            if (player[i] != null && player[i].equals(next_card)) {
+                player[i] = null;
+                break; // Exit the loop after removing the card
+            }
+        }
+
+        return next_card;
+    }
+
+    public static String[] Winner101(String c1, String c2, String c3, String c4) {
+        String[] cards = {c1, c2, c3, c4};
+        int highestRank = -1; // Initialize with a low value
+        String winning_card = "";
+
+        for (String card : cards) {
+            for (int i = 0; i < original_card_deck.length; i++) {
+                if (original_card_deck[i][0].equals(card)) {
+                    int rankIndex = Integer.parseInt(original_card_deck[i][1]);
+                    if (rankIndex > highestRank) {
+                        highestRank = rankIndex;
+                        winning_card = card;
+                    }
+                    break; // Exit the loop after finding the card
+                }
+            }
+        }
+
+        for(winning_index = 0; winning_index < 4; winning_index++){
+            if(cards[winning_index].equals(winning_card)){
+                points[winning_index] += 1;
+                break;
+            }
+        }
+
+        String[] Winner = WinnerOfThisRound(winning_index, player_1, player_2, player_3, player_4);
+
+        return Winner;
+    }
+
+    public static String[] WinnerOfThisRound(int a, String[] p1, String[] p2, String[] p3, String[] p4) {
+        String[] Winner_deck = new String[13];
+        if (a == 0)
+            System.arraycopy(p1, 0, Winner_deck, 0, 13);
+        else if (a == 1)
+            System.arraycopy(p2, 0, Winner_deck, 0, 13);
+        else if (a == 2)
+            System.arraycopy(p3, 0, Winner_deck, 0, 13);
+        else if (a == 3)
+            System.arraycopy(p4, 0, Winner_deck, 0, 13);
+
+        return Winner_deck;
+    }
+
+}
