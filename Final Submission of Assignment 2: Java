@@ -1,0 +1,443 @@
+import java.lang.String;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+
+public class CardGame {
+    public static String[][] original_card_deck = new String[52][2];  //Taking a 2D String array and made it static to be accessible in all methods in the same class.
+
+    public static int[] points = new int[4];//Made a 1D Integer array to keep records of the number of games won by each player.
+    public static int winning_index = 0; //Taking an int variable to keep in track of the points array index.
+
+    //Making 4 1D String arrays to keep the card distributed among the 4 players.
+    public static String[] player_1 = new String[13];
+    public static String[] player_2 = new String[13];
+    public static String[] player_3 = new String[13];
+    public static String[] player_4 = new String[13];
+
+
+    //Main method
+    public static void main(String[] args) {
+        /*
+        At first, we create a display box to initiate the game.
+        The dialogue box has the name of the Assignment.
+        We have used html to format the text in the dialogue box.
+
+        There are 2 buttons in the display box: (i) Play
+                                                (ii) Quit
+
+        Pressing the play button would initiate the game.
+        Pressing the quit button would terminate the game.
+         */
+
+        //Creating a JFrame (window) to hold the GUI components.
+        JFrame Initial_Display_Box = new JFrame("Card Game");
+
+        //Creating a panel to hold the title and buttons.
+        JPanel Main_Panel = new JPanel();
+        Main_Panel.setLayout(new BorderLayout());
+
+        //Creating a label for the title.
+        JLabel Initial_Display_Box_Label = new JLabel("<html><br><div style='text-align: center;'>Assignment 2<br><br>Card Game<br<br></div></html>");
+        Initial_Display_Box_Label.setHorizontalAlignment(JLabel.CENTER);
+        Initial_Display_Box_Label.setFont(new Font("Arial", Font.BOLD, 26));
+
+        //Creating a panel to hold the buttons.
+        JPanel Buttons_Panel = new JPanel();
+
+        //Creating "Play" button
+        JButton Play_Button = new JButton("Play");
+        Play_Button.setPreferredSize(new Dimension(120, 50)); //Setting preferred size.
+        Play_Button.setFont(new Font("Arial", Font.BOLD, 18)); //Setting font and font size.
+        Play_Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Game(); //Calling the Game method here when the "Play" button is clicked.
+                Initial_Display_Box.dispose();
+                Display_Rounds_Won();
+            }
+        });
+
+        //Creating "Quit" button.
+        JButton Quit_Button = new JButton("Quit");
+        Quit_Button.setPreferredSize(new Dimension(120, 50)); //Setting preferred size.
+        Quit_Button.setFont(new Font("Arial", Font.BOLD, 18)); //Setting font and font size.
+        Quit_Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0); //Terminating the program when the "Quit" button is clicked.
+            }
+        });
+
+        //Adding buttons to the button panel.
+        Buttons_Panel.add(Play_Button);
+        Buttons_Panel.add(Quit_Button);
+
+        //Adding the title label and button panel to the main panel.
+        Main_Panel.add(Initial_Display_Box_Label, BorderLayout.NORTH);
+        Main_Panel.add(Buttons_Panel, BorderLayout.CENTER);
+
+        //Adding the main panel to the Initial_Display_Box.
+        Initial_Display_Box.add(Main_Panel);
+
+        //Configuring the Initial_Display_Box.
+        Initial_Display_Box.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Initial_Display_Box.setSize(500, 300); //Setting the size of the window.
+        Initial_Display_Box.setVisible(true); //Making the window visible.
+
+
+
+        /*
+        Part 1: creating a deck of cards, shuffling them and distributing them among 4 players.
+
+        Here, first we have created an empty array for card deck and other two arrays for the suits and ranks.
+        Then we have arranged the cards according to their power in card_deck.
+        Then we have shuffled them and finally distribute them among 4 players.
+         */
+
+
+        String[] card_deck = new String[52];
+        String[] suits = {"Spades", "Hearts", "Clubs", "Diamonds"};
+        String[] ranks = {"Ace", "King", "Queen", "Joker", "10", "9", "8", "7", "6", "5", "4", "3", "2"};
+
+        int deck_index = 0;
+        for(String suit: suits){
+            for(String rank: ranks){
+                String cardName = rank + " of " + suit;
+                card_deck[deck_index] = cardName;
+                deck_index++;
+            }
+        }
+        //Printing this will give an output of: "Ace of Spades", "King of Spades", ... "2 of Diamonds".
+
+        //Copying all the cards from card_deck to original_card_deck with their rank.
+        for(int i = 0; i < 52; i++){
+            original_card_deck[i][0]=card_deck[i];
+            original_card_deck[i][1]= String.valueOf(i);
+        }
+
+        //Shuffling the deck 52 times.
+        for(int i=0; i<52; i++) {
+
+            //line 24 - 34 has been taken from slide 7 provided in Canvas.
+            for(int j=0; j<52; j++) {
+                int index = (int) (Math.random() * 52);
+                String temp = card_deck[j];
+                card_deck[j] = card_deck[index];
+                card_deck[index] = temp;
+            }
+        }
+
+        //Distributing the cards among the players. Each player get 13 cards.
+        for(int j=0; j<13; j++){
+            player_1[j] = card_deck[j];
+            player_2[j] = card_deck[13+j];
+            player_3[j] = card_deck[26+j];
+            player_4[j] = card_deck[39+j];
+        }
+
+    }
+
+    /*
+    Game method:
+    Here, we have kept all the game logics.
+     */
+    public static void Game(){
+        /*
+        After the distributing the cards, we are calling it in the main method.
+
+        First of all, we are initializing to player 1 for first round.
+        If it's the first round, the player 1 will give the first card.
+        If it's not, then the player 1 will give the highest card matching to the suit of the previously played card by player 4, or, the lowest card he has, in case if he doesn't have the same suit card.
+
+        After the player 1 played, player 2, 3 and 4 will give the highest card matching to the suit of the previously played card, or, the lowest card he has, in case if he doesn't have the same suit card.
+
+        The player with the highest rank card will win the round and 1 point will be added to his place allocated in the points array.
+
+        The next round will began with the winner then every other player after him will play their cards.
+        This will continue for 13 times including the the initial round.
+
+        In this method, we have called other methods: (i) Suit_Name (to figure out the suit name of the played card to understand the next move.)
+                                                      (ii) Next_Move (to find the next move of the next player.)
+                                                      (iii) Display_Each_Round (to display the name of the cards played in each round in a display box.)
+                                                      (iv) Winner_Of_Each_Round (to figure out who won the round and add their points in points array.)
+         */
+        int starting_player_index = 0; //Initializing to player 1 for the first round.
+        String[] players = {"Player 1", "Player 2", "Player 3", "Player 4"};
+
+
+        for (int round = 1; round <= 13; round++) {
+            int current_player_index = starting_player_index;
+
+            String[] ordered_player = new String[4];//To figure out which player will play next.
+            for (int i = 0; i < 4; i++) {
+                ordered_player[i] = players[(current_player_index + i) % 4];
+            }
+
+            String suit_name_1 = "";
+            String player_1_move = "";
+            String suit_name_4 = "";
+
+            //First move of the starting player in this round.
+            if (round == 1) {
+                int first_card_index = (int) (Math.random() * 13);
+                player_1_move = player_1[first_card_index];
+                suit_name_1 = Suit_Name(player_1_move);
+            } else {
+                //Player 1 plays according to the rules in subsequent rounds.
+                player_1_move = Next_Move(player_1, suit_name_4);
+                suit_name_1 = Suit_Name(player_1_move);
+            }
+
+            //Determining the current starting player for this round.
+            current_player_index = starting_player_index;
+
+            //Figuring out the suit names and the next move of the next subsequent players.
+            String player_2_move = Next_Move(player_2, suit_name_1);
+
+            String suit_name_3 = Suit_Name(player_2_move);
+            String player_3_move = Next_Move(player_3, suit_name_3);
+
+            suit_name_4 = Suit_Name(player_3_move);
+            String player_4_move = Next_Move(player_4, suit_name_4);
+
+            String[] cardsPlayedByPlayers = {player_1_move, player_2_move, player_3_move, player_4_move};
+            Display_Each_Round(round, cardsPlayedByPlayers);
+
+            //Determining the winner of the round and updating the starting player for the next round.
+            String winner[] = Winner_Of_Each_Round(player_1_move, player_2_move, player_3_move, player_4_move);
+            for (int i = 0; i < 4; i++) {
+                if (ordered_player[i].equals(winner)) {
+                    starting_player_index = (current_player_index + i) % 4;
+                    break;
+                }
+            }
+        }
+
+    }
+
+    /*
+    Suit_Name method:
+    We input the card and get the suit name from here.
+     */
+    public static String Suit_Name(String card){
+        if(card.contains("Spades"))
+            return "Spades";
+        else if (card.contains("Hearts"))
+            return "Hearts";
+        else if (card.contains("Clubs"))
+            return "Clubs";
+        else
+            return "Diamond";
+    }
+
+
+    /*
+    Suit_Name method:
+    Here we are getting the next move from the next player after the 1st move from player 1.
+     */
+    public static String Next_Move(String[] player, String suit) {
+        /*
+        As it has been mentioned in the question,
+        player 1 needs to play a random card
+        If player 2 AKA. next player have card(s) of that suit (the one player 1 played,
+        they need to play the highest rank of that suit they have. For example: if player on played 6 of Spades and
+        player 2 have 3 of spades, 8 of spades and Ace of spades, then player 2 needs to play Ace of spades.
+        This is how each player playing 1 card will finish one round.
+
+        However, if player 2 doesn't have any spades card, then player 2 can play any random suit however it needs to be the lowest rank.
+        For example they can have Ace of Diamond, and 2 of clubs and they have to play ace of diamond as according to our serial ace of diamond
+        is less than 2 of clubs.
+
+        We also remove the card that has already been played by a player in this method and keep that place null.
+         */
+
+        String next_card = "";
+        String highest_rank_card_of_same_suit = "";
+        String lowest_rank_card_of_different_suit = "";
+
+        for (int i = 0; i < player.length; i++) {
+            String card = player[i];
+
+            /*
+            Check if the card is null.
+            Here, by the end we will be removing the cards that has been already used in the game.
+            So, there will be some null places in the player array.
+             */
+
+            if (card == null) {
+                continue;
+            }
+
+            if (card.contains(suit)) {
+                if (highest_rank_card_of_same_suit.isEmpty() || card.compareTo(highest_rank_card_of_same_suit) > 0) {
+                    highest_rank_card_of_same_suit = card;
+                }
+            }
+            if (lowest_rank_card_of_different_suit.isEmpty() || card.compareTo(lowest_rank_card_of_different_suit) < 0) {
+                lowest_rank_card_of_different_suit = card;
+            }
+        }
+
+        if (!highest_rank_card_of_same_suit.isEmpty()) {
+            //Player has cards of the same suit, play the highest rank card.
+            next_card = highest_rank_card_of_same_suit;
+        } else {
+            //Player doesn't have cards of the same suit, play the lowest rank card.
+            next_card = lowest_rank_card_of_different_suit;
+        }
+
+        //Removing the played card from the player's deck.
+        for (int i = 0; i < player.length; i++) {
+            if (player[i] != null && player[i].equals(next_card)) {
+                player[i] = null;
+                break; //Exiting the loop after removing the card.
+            }
+        }
+
+        return next_card;
+    }
+
+    /*
+    Winner_Of_Each_Round method:
+    Here we are getting the Winner of each round.
+     */
+    public static String[] Winner_Of_Each_Round(String c1, String c2, String c3, String c4) {
+        /*
+        This method intakes four card name as strings and matches them with the cards in the original_card_deck to figure out the rank of the card.
+        After finding the higest rank card, it increases the point of the player who played the card in that round.
+
+        Finally it calls only one method: Winner, to find out the winner and return his deck of cards as a String array.
+         */
+
+        String[] cards = {c1, c2, c3, c4};
+        int highestRank = -1;
+        String winning_card = "";
+
+        for (String card : cards) {
+            for (int i = 0; i < original_card_deck.length; i++) {
+                if (original_card_deck[i][0].equals(card)) {
+                    int rankIndex = Integer.parseInt(original_card_deck[i][1]);
+                    if (rankIndex > highestRank) {
+                        highestRank = rankIndex;
+                        winning_card = card;
+                    }
+                    break; //Exiting the loop after finding the card.
+                }
+            }
+        }
+
+        for(winning_index = 0; winning_index < 4; winning_index++){
+            if(cards[winning_index].equals(winning_card)){
+                points[winning_index] += 1;
+                break;
+            }
+        }
+
+        String[] Winner = Winner(winning_index, player_1, player_2, player_3, player_4);
+
+        return Winner;
+    }
+
+    /*
+    Winner method:
+    We copy the winner's deck to winner_deck and return it.
+     */
+    public static String[] Winner(int a, String[] p1, String[] p2, String[] p3, String[] p4) {
+        String[] winner_deck = new String[13];
+        if (a == 0)
+            System.arraycopy(p1, 0, winner_deck, 0, 13);
+        else if (a == 1)
+            System.arraycopy(p2, 0, winner_deck, 0, 13);
+        else if (a == 2)
+            System.arraycopy(p3, 0, winner_deck, 0, 13);
+        else if (a == 3)
+            System.arraycopy(p4, 0, winner_deck, 0, 13);
+
+        return winner_deck;
+    }
+
+    /*
+    Display_Each_Round method:
+    In this method, we created a display box to show all the cards that has been played in a round.
+     */
+    public static void Display_Each_Round(int roundNumber, String[] cardsPlayedByPlayers) {
+        /*
+        This display box contains 2 buttons: (i) Next (the game will continue if we click it)
+                                             (ii) Quit (the game will terminate if we click it)
+         */
+        //Creating a JTextArea to display the cards played
+        JTextArea Round_Display_Box = new JTextArea();
+        Round_Display_Box.setEditable(false); // Make it read-only
+        Round_Display_Box.setFont(new Font("Arial", Font.BOLD, 18));
+
+        //Building the text content for cards played in this round
+        StringBuilder Round_Lebel_1 = new StringBuilder("Round ").append(roundNumber).append("\n");
+
+        for (int i = 0; i < 4; i++) {
+            Round_Lebel_1.append("Player ").append(i + 1).append(": ").append(cardsPlayedByPlayers[i]).append("\n");
+        }
+
+        //Setting the text content to the JTextArea
+        Round_Display_Box.setText(Round_Lebel_1.toString());
+
+        //Creating an array of buttons for the dialog
+        String[] options = {"Next", "Quit"};
+
+        //Showing a dialog with "Next" and "Quit" buttons
+        int choice = JOptionPane.showOptionDialog(null, Round_Display_Box, "Cards Played in this Round",
+                JOptionPane.YES_NO_OPTION, JOptionPane.PLAIN_MESSAGE, null, options, options[0]);
+
+        //Handling the user's choice
+        if (choice == 0) {
+            //User clicked "Next"
+            //Continue with the game logic
+        } else if (choice == 1) {
+            //User clicked "Quit"
+            System.exit(0); //Close the application
+        }
+    }
+
+    public static void Display_Rounds_Won() {
+        //Creating a new JFrame to display the rounds won
+        JFrame Result_Display_Box = new JFrame("Rounds Won by Each Player");
+        Result_Display_Box.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        Result_Display_Box.setSize(400, 250); // Increase the height to accommodate the "Finish" button
+
+        //Creating a JTextArea to display the number of rounds won by each player
+        JTextArea Rounds_Won_Text_Area = new JTextArea();
+        Rounds_Won_Text_Area.setEditable(false); // Make it read-only
+        Rounds_Won_Text_Area.setFont(new Font("Arial", Font.BOLD, 16));
+
+        //Building the text content
+        StringBuilder Rounds_Won_Text = new StringBuilder("Number of rounds won by each player:\n");
+        for (int i = 0; i < 4; i++) {
+            Rounds_Won_Text.append("Player ").append(i + 1).append(": ").append(points[i]).append("\n");
+        }
+
+        //Setting the text content to the JTextArea
+        Rounds_Won_Text_Area.setText(Rounds_Won_Text.toString());
+
+        // Add the JTextArea to the Result_Display_Box
+        Result_Display_Box.getContentPane().add(Rounds_Won_Text_Area);
+
+        // Create a "Finish" button
+        JButton Finish_Button = new JButton("Finish");
+        Finish_Button.setFont(new Font("Arial", Font.BOLD, 18));
+        Finish_Button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Close the application when the "Finish" button is clicked
+                System.exit(0);
+            }
+        });
+
+        // Add the "Finish" button to the Result_Display_Box at the bottom
+        Result_Display_Box.getContentPane().add(Finish_Button, BorderLayout.PAGE_END);
+
+        // Make the result frame visible
+        Result_Display_Box.setVisible(true);
+    }
+}
