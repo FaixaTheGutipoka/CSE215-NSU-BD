@@ -1,0 +1,176 @@
+import tkinter as tk
+from tkinter import messagebox
+import random
+
+original_card_deck = {}
+points = [0, 0, 0, 0]
+
+player_1 = []
+player_2 = []
+player_3 = []
+player_4 = []
+
+def Main_Method():
+    card_deck = []
+    suits = ["Spades", "Hearts", "Clubs", "Diamonds"]
+    ranks = ["Ace", "King", "Queen", "Joker", "10", "9", "8", "7", "6", "5", "4", "3", "2"]
+
+    for suit in suits:
+        for rank in ranks:
+            card_name = rank + " of " + suit
+            card_deck.append(card_name)
+            
+    global original_card_deck
+    for i, card_name in enumerate(card_deck):
+        original_card_deck[card_name] = i
+
+    for i in range(52):
+        for j in range(52):
+            index = random.randint(0,51)
+            card_deck[j], card_deck[index] = card_deck[index], card_deck[j]
+
+    global player_1, player_2, player_3, player_4
+    player_1 = card_deck[:13]
+    player_2 = card_deck[13:26]
+    player_3 = card_deck[26:39]
+    player_4 = card_deck[39:52]
+
+    
+    Game_Logic()
+
+
+def Game_Logic():
+    starting_player_index = 0
+    players = ["Player 1", "Player 2", "Player 3", "Player 4"]
+    
+    for rounds in range(1, 14):
+        print()
+        print("Round "+str(rounds))
+
+        current_player_index = starting_player_index;
+        order_player = []
+
+        for i in range(4):
+            order_player.append(players[(current_player_index + i)%4])
+
+        suit_name_1 = ""
+        player_1_move = ""
+        suit_name_4 = ""
+
+        if rounds == 1:
+            first_card_index = random.randint(0,12)
+            player_1_move = player_1[first_card_index]
+            print(players[starting_player_index] + ": " + player_1_move)
+            suit_name_1 = Suit_Name(player_1_move)
+        else:
+            player_1_move = Next_Move(player_1, suit_name_4)
+            print(players[starting_player_index] + ": " + player_1_move)
+            suit_name_1 = Suit_Name(player_1_move)
+
+        current_player_index = starting_player_index
+
+        player_2_move = Next_Move(player_2, suit_name_1)
+        print(order_player[1] + ": " + player_2_move)
+
+        suit_name_3 = Suit_Name(player_2_move)
+        player_3_move = Next_Move(player_3, suit_name_3)
+        print(order_player[2] + ": " + player_3_move)
+
+        suit_name_4 = Suit_Name(player_3_move)
+        player_4_move = Next_Move(player_4, suit_name_4)
+        print(order_player[3] + ": " + player_4_move)
+
+        winner = Winner_Of_Each_Round(player_1_move, player_2_move, player_3_move, player_4_move)
+        for i in range(4):
+            if order_player[i] == winner:
+                starting_player_index = (current_player_index + i) % 4
+                break
+
+    print()
+    print()
+    for i in range(len(points)):
+        print("Number of rounds won by player " + str(i) +": " + str(points[i]));
+
+
+        
+        
+
+def Suit_Name(card):
+    if "Spades" in card:
+        return "Spades"
+    elif "Hearts" in card:
+        return "Hearts"
+    elif "Clubs" in card:
+        return "Clubs"
+    else:
+        return "Diamond"
+
+    
+def Next_Move(players_deck, suit):
+    next_card = ""
+    highest_rank_card_of_same_suit = ""
+    lowest_rank_card_of_different_suit = ""
+
+    for cards in players_deck:
+        card = cards
+
+        if card is None:
+            continue
+
+        if suit in card:
+           if (not highest_rank_card_of_same_suit or card > highest_rank_card_of_same_suit):
+               highest_rank_card_of_same_suit = card
+        elif (not lowest_rank_card_of_different_suit or card > lowest_rank_card_of_different_suit):
+            lowest_rank_card_of_different_suit = card
+
+    if highest_rank_card_of_same_suit:
+        next_card = highest_rank_card_of_same_suit
+    else:
+        next_card = lowest_rank_card_of_different_suit
+
+    for i, card in enumerate(players_deck):
+        if card == next_card:
+            players_deck[i] = None
+            break
+
+    return next_card
+
+def Winner_Of_Each_Round(c1, c2, c3, c4):
+    cards = [c1, c2, c3, c4]
+    highest_rank = -1
+    winning_card = ""
+
+    for card in cards:
+        for card_name, rank_index in original_card_deck.items():
+            if card_name == card:
+                if rank_index > highest_rank:
+                    highest_rank = rank_index
+                    winning_card = card
+                break
+
+    for winning_index, card in enumerate(cards):
+        if card == winning_card:
+            points[winning_index] += 1
+            break
+
+    winner = Winner(winning_index, player_1, player_2, player_3, player_4)
+
+    return winner
+
+def Winner(a, p1, p2, p3, p4):
+    winner_deck = [""] * 13
+    if a == 0:
+        winner_deck = p1[:13]
+    elif a == 1:
+        winner_deck = p2[:13]
+    elif a == 2:
+        winner_deck = p3[:13]
+    elif a == 3:
+        winner_deck = p4[:13]
+
+    return winner_deck
+
+    
+
+Main_Method()
+        
