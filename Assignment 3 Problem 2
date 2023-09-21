@@ -1,0 +1,69 @@
+public class Assignment_3_Problem_2 {
+    public static void main(String[] args) {
+        Time a = new Time();
+
+        System.out.println("Using default constructor: ");
+        System.out.println("Hours  : " + a.getHours());
+        System.out.println("Minutes: " + a.getMinutes());
+        System.out.println("Seconds: " + a.getSeconds());
+
+
+
+        long elapsed_time = 555550000;
+        Time b = new Time(elapsed_time);
+
+        System.out.println("\nUsing elapse_Time constructor: ");
+        System.out.println("Hours  : " + b.getHours());
+        System.out.println("Minutes: " + b.getMinutes());
+        System.out.println("Seconds: " + b.getSeconds());
+
+        Time c = new Time(10, 11, 12);
+
+        System.out.println("\nUsing hour-minutes-second constructor: ");
+        System.out.println("Hours  : " + c.getHours());
+        System.out.println("Minutes: " + c.getMinutes());
+        System.out.println("Seconds: " + c.getSeconds());
+    }
+}
+
+class Time {
+    int hours, minutes, seconds;
+
+    public Time() {
+        this(System.currentTimeMillis());
+    }
+
+
+    public Time(long elapsedTime) {
+        setTime(elapsedTime);
+    }
+
+    public Time(int hours, int minutes, int seconds) {
+        this.hours = hours;
+        this.minutes = minutes;
+        this.seconds = seconds;
+    }
+
+    public int getHours() {
+        return hours;
+    }
+
+    public int getMinutes() {
+        return minutes;
+    }
+
+    public int getSeconds() {
+        return seconds;
+    }
+
+    public void setTime(long elapsedTime){
+        long total_seconds = elapsedTime/1000; //converting milliseconds to seconds
+        this.seconds = (int) (total_seconds%60);
+
+        long total_minutes = total_seconds/60;
+        this.minutes = (int) (total_minutes%60);
+
+        long total_hours = total_minutes/60;
+        this.hours = (int) (total_hours%60);
+    }
+}
