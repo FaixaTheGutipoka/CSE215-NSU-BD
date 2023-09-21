@@ -1,0 +1,72 @@
+import java.text.DecimalFormat;
+import java.util.Scanner;
+
+public class Assignment_3_Problem_1 {
+    public static void main(String[] args) {
+
+        Scanner s = new Scanner(System.in);
+
+        System.out.println("Row and Column number of matrix A: ");
+        int r_A = s.nextInt();
+        int c_A = s.nextInt();
+
+        System.out.println("\nRow and Column number of matrix B: ");
+        int r_B = s.nextInt();
+        int c_B = s.nextInt();
+
+        double[][] a = new double[r_A][c_A];
+        double[][] b = new double[r_B][c_B];
+
+        System.out.println("\n\nEnter the elements of matrix A: ");
+        for(int i = 0; i < r_A; i++){
+            for (int j = 0; j < c_A; j++){
+                a[i][j] = s.nextDouble();
+            }
+        }
+
+        System.out.println("\n\nEnter the elements of matrix B: ");
+        for(int i = 0; i < r_B; i++){
+            for (int j = 0; j < c_B; j++){
+                b[i][j] = s.nextDouble();
+            }
+        }
+
+        double[][] c = multiplyMatrix(a, b);
+
+        System.out.println("\n");
+        DecimalFormat d = new DecimalFormat("#.#");
+
+        for (int i = 0; i < c.length; i++) {
+            for (int j = 0; j < c[i].length; j++) {
+                System.out.print(d.format(c[i][j]) + " ");
+            }
+            System.out.println();
+        }
+    }
+
+    public static double[][] multiplyMatrix(double[][] a, double[][] b){
+        int A_row = a.length;
+        int A_col = a[0].length;
+        int B_row = b.length;
+        int B_col = b[0].length;
+
+        if (A_col != B_row) {
+            System.out.println("The dimensions do not match.");
+        }
+
+
+        double[][] c = new double[A_row][B_col];
+
+        for (int i = 0; i < A_row; i++) {
+            for (int j = 0; j < B_col; j++) {
+                double sum = 0;
+                for (int k = 0; k < A_col; k++) {
+                    sum += a[i][k] * b[k][j];
+                }
+                c[i][j] = sum;
+            }
+        }
+
+        return c;
+    }
+}
